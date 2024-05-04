@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/JS-AK/pg-migration-system/compare/v1.0.1...v1.0.2) (2024-05-04)
+
+
+### Bug Fixes
+
+* bump dev-deps to actual ([4087cf5](https://github.com/JS-AK/pg-migration-system/commit/4087cf556a2025e09f8af9bb82d73798a288dae2))
+
 ## [1.0.1](https://github.com/JS-AK/pg-migration-system/compare/v1.0.0...v1.0.1) (2024-05-04)
 
 
