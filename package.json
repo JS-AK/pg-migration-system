@@ -40,7 +40,7 @@
     "@semantic-release/git": "10.0.1",
     "@semantic-release/github": "9.2.6",
     "@semantic-release/npm": "11.0.3",
-    "@semantic-release/release-notes-generator": "12.1.0",
+    "@semantic-release/release-notes-generator": "13.0.0",
     "@types/node": "20.11.30",
     "@types/pg": "8.11.2",
     "semantic-release": "23.0.2",
