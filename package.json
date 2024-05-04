@@ -1,7 +1,7 @@
 {
-  "name": "@js-ak/example-automatic-deploy-ts-app-to-npm-with-scope",
-  "version": "1.5.0",
-  "description": "example-automatic-deploy-ts-app-to-npm-with-scope",
+  "name": "@js-ak/pg-migration-system",
+  "version": "0.0.1",
+  "description": "pg-migration-system",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -13,7 +13,6 @@
     "build/lib",
     "build/index.js",
     "build/index.d.ts",
-    "build/index.d.ts.map",
     "LICENSE",
     "README.md",
     "package.json"
@@ -24,25 +23,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JS-AK/example-automatic-deploy-ts-app-to-npm-with-scope.git"
+    "url": "git+https://github.com/JS-AK/pg-migration-system.git"
   },
   "keywords": [
-    "example-automatic-deploy-ts-app-to-npm-with-scope"
+    "pg-migration-system"
   ],
   "author": "JS-AK",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JS-AK/example-automatic-deploy-ts-app-to-npm-with-scope/issues"
+    "url": "https://github.com/JS-AK/pg-migration-system/issues"
   },
-  "homepage": "https://github.com/JS-AK/example-automatic-deploy-ts-app-to-npm-with-scope#readme",
+  "homepage": "https://github.com/JS-AK/pg-migration-system#readme",
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^11.1.0",
-    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/changelog": "6.0.3",
+    "@semantic-release/commit-analyzer": "11.1.0",
+    "@semantic-release/git": "10.0.1",
     "@semantic-release/github": "9.2.6",
     "@semantic-release/npm": "11.0.3",
-    "@semantic-release/release-notes-generator": "^12.1.0",
+    "@semantic-release/release-notes-generator": "12.1.0",
     "@types/node": "20.11.30",
+    "@types/pg": "8.11.2",
     "semantic-release": "23.0.2",
     "typescript": "5.4.2"
   }
