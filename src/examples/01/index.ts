@@ -29,3 +29,5 @@ await Down.start(pool, {
 	migrationsTableName: "migration_control",
 	pathToSQL: path.resolve(process.cwd(), "src", "test", "01", "migrations", "sql"),
 });
+
+await pool.end();

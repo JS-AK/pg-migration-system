@@ -1,5 +1,4 @@
-<!-- markdownlint-disable-next-line first-line-heading -->
-- [Documentation](/)
+- [Documentation](migration-system)
 - [Changelog](changelog.md)
 - **Links**
 - [![Github](assets/img/github.svg)Github](https://github.com/JS-AK/pg-migration-system)
