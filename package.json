@@ -1,0 +1,49 @@
+{
+  "name": "@js-ak/example-automatic-deploy-ts-app-to-npm-with-scope",
+  "version": "1.5.0",
+  "description": "example-automatic-deploy-ts-app-to-npm-with-scope",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "type": "module",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build/lib",
+    "build/index.js",
+    "build/index.d.ts",
+    "build/index.d.ts.map",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node ./build/test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JS-AK/example-automatic-deploy-ts-app-to-npm-with-scope.git"
+  },
+  "keywords": [
+    "example-automatic-deploy-ts-app-to-npm-with-scope"
+  ],
+  "author": "JS-AK",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JS-AK/example-automatic-deploy-ts-app-to-npm-with-scope/issues"
+  },
+  "homepage": "https://github.com/JS-AK/example-automatic-deploy-ts-app-to-npm-with-scope#readme",
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "9.2.6",
+    "@semantic-release/npm": "11.0.3",
+    "@semantic-release/release-notes-generator": "^12.1.0",
+    "@types/node": "20.11.30",
+    "semantic-release": "23.0.2",
+    "typescript": "5.4.2"
+  }
+}
