@@ -43,6 +43,7 @@
     "@semantic-release/release-notes-generator": "13.0.0",
     "@types/node": "20.12.8",
     "@types/pg": "8.11.6",
+    "pg": "8.11.5",
     "semantic-release": "23.0.8",
     "typescript": "5.4.5"
   }

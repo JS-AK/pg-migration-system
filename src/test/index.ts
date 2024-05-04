@@ -1,6 +1,3 @@
-import assert from "node:assert";
-import test from "node:test";
+import start01 from "./01/index.js";
 
-test("test", () => {
-  assert.equal(true, true);
-});
+await start01();
