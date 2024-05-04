@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/JS-AK/pg-migration-system/compare/v1.0.5...v1.0.6) (2024-05-04)
+
+
+### Bug Fixes
+
+* updated documentation ([f2f4486](https://github.com/JS-AK/pg-migration-system/commit/f2f4486b1abcab7453a56194efa0c05e10c93a4b))
+
 ## [1.0.5](https://github.com/JS-AK/pg-migration-system/compare/v1.0.4...v1.0.5) (2024-05-04)
 
 
