@@ -33,6 +33,9 @@ jobs:
 
       - name: Run Tests
         run: npm test
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
 
   release:
     name: Release
