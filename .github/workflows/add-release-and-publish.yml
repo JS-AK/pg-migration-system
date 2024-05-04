@@ -6,12 +6,10 @@ on:
       - master
 
 jobs:
-
-  runner-job:
+  lint-and-test:
     runs-on: ubuntu-latest
 
     services:
-
       postgres:
         image: postgres
         env:
@@ -39,6 +37,7 @@ jobs:
 
   release:
     name: Release
+    needs: lint-and-test
     runs-on: ubuntu-latest
     steps:
 
