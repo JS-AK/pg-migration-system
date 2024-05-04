@@ -1,3 +1,11 @@
+## [1.0.4](https://github.com/JS-AK/pg-migration-system/compare/v1.0.3...v1.0.4) (2024-05-04)
+
+
+### Bug Fixes
+
+* added eslint ([c423908](https://github.com/JS-AK/pg-migration-system/commit/c423908541c3e125f2f05fc63b509a33bbac127b))
+* updated make-release workflow ([0ee3fe3](https://github.com/JS-AK/pg-migration-system/commit/0ee3fe3c7ff872c91640977f7fef26e80c01b69b))
+
 ## [1.0.3](https://github.com/JS-AK/pg-migration-system/compare/v1.0.2...v1.0.3) (2024-05-04)
 
 
