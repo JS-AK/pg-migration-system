@@ -17,7 +17,7 @@ export async function start(
 	},
 ) {
 	try {
-		const sqlFiles = await walk(settings.pathToSQL);
+		const sqlFiles = (await walk(settings.pathToSQL)).reverse();
 
 		for (const file of sqlFiles) {
 			const sql = fs.readFileSync(file).toString();

@@ -71,5 +71,4 @@ import { CreateEmptySQL } from "@js-ak/pg-migration-system";
 await CreateEmptySQL.create(
     path.resolve(process.cwd(), "migrations", "sql")
 );
-
 ```
