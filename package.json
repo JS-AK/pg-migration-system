@@ -1,6 +1,6 @@
 {
   "name": "@js-ak/pg-migration-system",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "pg-migration-system",
   "publishConfig": {
     "access": "public",
