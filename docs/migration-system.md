@@ -43,6 +43,7 @@ await pool.end();
 ```javascript
 import path from "node:path";
 import { Down } from "@js-ak/pg-migration-system";
+import pg from "pg";
 
 const creds = {
     database: "database",
