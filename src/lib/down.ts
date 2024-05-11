@@ -3,7 +3,8 @@
 import fs from "node:fs";
 
 import * as Types from "./types/index.js";
-import { walk } from "./helpers.js";
+
+import * as Helpers from "./helpers.js";
 
 /**
  * @experimental
@@ -17,83 +18,37 @@ export async function start(
 	},
 ) {
 	try {
-		const sqlFiles = (await walk(settings.pathToSQL)).reverse();
+		const sqlFiles = (await Helpers.walk(settings.pathToSQL)).reverse();
+
+		let queryResult = "";
 
 		for (const file of sqlFiles) {
 			const sql = fs.readFileSync(file).toString();
+			const result = Helpers.search(sql);
 
-			const tables = sql
-				.toLowerCase()
-				.replace(/[^a-z0-9,()_; ]/g, " ")
-				.replace(/  +/g, " ")
-				.trim()
-				.split("create table");
+			queryResult += result;
+		}
 
-			tables.shift();
+		if (queryResult) {
+			await pool.query(queryResult);
 
-			if (tables) {
-				for (const table of tables) {
-					const t = table.trim().split("(")[0]?.trim();
+			const chunks = queryResult.split(";").filter((e) => e);
 
-					if (!t) continue;
-
-					await pool.query(`DROP TABLE IF EXISTS ${t} CASCADE`);
-					console.log(`DROP TABLE ${t} done!`);
-				}
-			}
-
-			const types = sql
-				.toLowerCase()
-				.replace(/[^a-z0-9,()_; ]/g, " ")
-				.replace(/  +/g, " ")
-				.trim()
-				.split("create type");
-
-			types.shift();
-
-			if (types) {
-				for (const type of types) {
-					const t = type.trim().split("(")[0]?.trim();
-
-					if (!t) continue;
-
-					const v = t.split(" as ");
-
-					if (v.length > 1) {
-						console.log(`DROP TYPE ${v[0]} done!`);
-						await pool.query(`DROP TYPE IF EXISTS ${v[0]} CASCADE`);
-					} else {
-						console.log(`DROP TYPE ${t[0]} done!`);
-						await pool.query(`DROP TYPE IF EXISTS ${t[0]} CASCADE`);
-					}
-				}
-			}
-
-			const sequences = sql
-				.toLowerCase()
-				.replace(/[^a-z0-9,()_; ]/g, " ")
-				.replace(/  +/g, " ")
-				.trim()
-				.split("create sequence");
-
-			sequences.shift();
-
-			if (sequences) {
-				for (const sequence of sequences) {
-					const s = sequence.trim().split(" ")[0]?.trim();
-
-					if (!s) continue;
-
-					await pool.query(`DROP SEQUENCE IF EXISTS ${s} CASCADE`);
-					console.log(`DROP SEQUENCE ${s} done!`);
-				}
+			for (const chunk of chunks) {
+				console.log(`${chunk} done!`);
 			}
 		}
 
-		await pool.query(`DROP TABLE IF EXISTS ${settings.migrationsTableName} CASCADE`);
-		console.log(`DROP TABLE ${settings.migrationsTableName} done!`);
+		{
+			const query = `DROP TABLE IF EXISTS ${settings.migrationsTableName} CASCADE`;
+
+			await pool.query(query);
+			console.log(`${query} done!`);
+		}
 
 		if (settings.isNeedCleanupAll) {
+			let queryResult = "";
+
 			const tables = (await pool.query(`
 			  SELECT tablename
 			  FROM pg_tables
@@ -102,8 +57,7 @@ export async function start(
 
 			if (tables.length) {
 				for (const table of tables) {
-					await pool.query(`DROP TABLE IF EXISTS ${table.tablename} CASCADE`);
-					console.log(`DROP TABLE ${table.tablename} done!`);
+					queryResult += `DROP TABLE IF EXISTS ${table.tablename} CASCADE;`;
 				}
 			}
 
@@ -115,8 +69,31 @@ export async function start(
 
 			if (sequences.length) {
 				for (const sequence of sequences) {
-					await pool.query(`DROP SEQUENCE IF EXISTS ${sequence.sequencename} CASCADE`);
-					console.log(`DROP SEQUENCE ${sequence.sequencename} done!`);
+					queryResult += `DROP SEQUENCE IF EXISTS ${sequence.sequencename} CASCADE;`;
+				}
+			}
+
+			const functions = (await pool.query(`
+				SELECT routines.routine_name, parameters.data_type, parameters.ordinal_position
+				FROM information_schema.routines
+				LEFT JOIN information_schema.parameters ON routines.specific_name=parameters.specific_name
+				WHERE routines.specific_schema='public'
+				ORDER BY routines.routine_name, parameters.ordinal_position;
+			`)).rows;
+
+			if (functions.length) {
+				for (const fn of functions) {
+					queryResult += `DROP FUNCTION IF EXISTS ${fn.routine_name} CASCADE;`;
+				}
+			}
+
+			if (queryResult) {
+				await pool.query(queryResult);
+
+				const chunks = queryResult.split(";").filter((e) => e);
+
+				for (const chunk of chunks) {
+					console.log(`${chunk} done!`);
 				}
 			}
 		}
