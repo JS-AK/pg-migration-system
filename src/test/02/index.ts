@@ -1,4 +1,3 @@
-import assert from "node:assert";
 import path from "node:path";
 import test from "node:test";
 
@@ -15,27 +14,23 @@ const creds = {
 };
 
 export default async () => {
-	return test("01 test", async () => {
+	return test("02 test", async () => {
 		const pool = new pg.Pool(creds);
 
 		await Down.start(pool, {
 			isNeedCleanupAll: true,
 			migrationsTableName: "migration_control",
-			pathToSQL: path.resolve(process.cwd(), "src", "test", "01", "migrations", "sql"),
+			pathToSQL: path.resolve(process.cwd(), "src", "test", "02", "migrations", "sql"),
 		});
 
 		await Up.start(pool, {
 			migrationsTableName: "migration_control",
-			pathToSQL: path.resolve(process.cwd(), "src", "test", "01", "migrations", "sql"),
+			pathToSQL: path.resolve(process.cwd(), "src", "test", "02", "migrations", "sql"),
 		});
-
-		const { rows } = await pool.query("SELECT * FROM user_roles");
-
-		assert.equal(rows.length, 2);
 
 		await Down.start(pool, {
 			migrationsTableName: "migration_control",
-			pathToSQL: path.resolve(process.cwd(), "src", "test", "01", "migrations", "sql"),
+			pathToSQL: path.resolve(process.cwd(), "src", "test", "02", "migrations", "sql"),
 		});
 
 		await pool.end();
