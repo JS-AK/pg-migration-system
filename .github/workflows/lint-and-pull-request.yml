@@ -1,0 +1,39 @@
+name: Lint & Test PR
+
+on:
+  pull_request:
+    branches: ['dev', 'master', 'next']
+
+jobs:
+  runner-job:
+    runs-on: ubuntu-latest
+
+    services:
+
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: admin
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm test
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
