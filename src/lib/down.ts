@@ -14,10 +14,13 @@ export async function start(
 	settings: {
 		migrationsTableName: string;
 		isNeedCleanupAll?: boolean;
+		schema?: string;
 		pathToSQL: string;
 	},
 ) {
 	try {
+		const schema = settings.schema || "public";
+
 		const sqlFiles = (await Helpers.walk(settings.pathToSQL)).reverse();
 
 		let queryResult = "";
@@ -47,55 +50,10 @@ export async function start(
 		}
 
 		if (settings.isNeedCleanupAll) {
-			let queryResult = "";
+			const query = `DROP SCHEMA ${schema} CASCADE; CREATE SCHEMA ${schema};`;
 
-			const tables = (await pool.query(`
-			  SELECT tablename
-			  FROM pg_tables
-			  WHERE schemaname = 'public'
-			`)).rows;
-
-			if (tables.length) {
-				for (const table of tables) {
-					queryResult += `DROP TABLE IF EXISTS ${table.tablename} CASCADE;`;
-				}
-			}
-
-			const sequences = (await pool.query(`
-			  SELECT sequencename
-			  FROM pg_sequences
-			  WHERE schemaname = 'public'
-			`)).rows;
-
-			if (sequences.length) {
-				for (const sequence of sequences) {
-					queryResult += `DROP SEQUENCE IF EXISTS ${sequence.sequencename} CASCADE;`;
-				}
-			}
-
-			const functions = (await pool.query(`
-				SELECT routines.routine_name, parameters.data_type, parameters.ordinal_position
-				FROM information_schema.routines
-				LEFT JOIN information_schema.parameters ON routines.specific_name=parameters.specific_name
-				WHERE routines.specific_schema='public'
-				ORDER BY routines.routine_name, parameters.ordinal_position;
-			`)).rows;
-
-			if (functions.length) {
-				for (const fn of functions) {
-					queryResult += `DROP FUNCTION IF EXISTS ${fn.routine_name} CASCADE;`;
-				}
-			}
-
-			if (queryResult) {
-				await pool.query(queryResult);
-
-				const chunks = queryResult.split(";").filter((e) => e);
-
-				for (const chunk of chunks) {
-					console.log(`${chunk} done!`);
-				}
-			}
+			await pool.query(query);
+			console.log(`${query} done!`);
 		}
 
 		console.log("All done!");

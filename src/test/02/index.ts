@@ -18,6 +18,7 @@ export default async () => {
 		const pool = new pg.Pool(creds);
 
 		await Down.start(pool, {
+			isNeedCleanupAll: true,
 			migrationsTableName: "migration_control",
 			pathToSQL: path.resolve(process.cwd(), "src", "test", "02", "migrations", "sql"),
 		});

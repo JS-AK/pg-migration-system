@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const defineType = (query: string): { type: "table" | "sequence" | "index" | "trigger" | "function" | "extension" | "type" | "view" | "unknown"; result: string; } => {
+const defineType = (query: string): { type: "table" | "sequence" | "index" | "function" | "extension" | "type" | "view" | "unknown"; result: string; } => {
 	// CREATE FUNCTION
 	{
 		const check = query.split(" create function ").length > 1
@@ -236,16 +236,6 @@ export const search = (sql: string): string => {
 
 				if (name) {
 					queryResult += `DROP TABLE IF EXISTS ${name} CASCADE;`;
-				}
-
-				break;
-			}
-
-			case "trigger": {
-				const name = result.split(" ")[0]?.trim();
-
-				if (name) {
-					queryResult += `DROP TRIGGER IF EXISTS ${name} CASCADE;`;
 				}
 
 				break;
