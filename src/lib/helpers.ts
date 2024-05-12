@@ -3,7 +3,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const defineType = (query: string): { type: "table" | "sequence" | "index" | "function" | "extension" | "type" | "view" | "unknown"; result: string; } => {
+const defineType = (query: string): {
+	type: |"table" | "sequence" | "procedure" | "index" | "function" | "extension" | "type" | "view" | "unknown";
+	result: string;
+} => {
 	// CREATE FUNCTION
 	{
 		const check = query.split(" create function ").length > 1
@@ -15,6 +18,21 @@ const defineType = (query: string): { type: "table" | "sequence" | "index" | "fu
 
 			if (result) {
 				return { result, type: "function" };
+			}
+		}
+	}
+
+	// CREATE PROCEDURE
+	{
+		const check = query.split(" create procedure ").length > 1
+			|| query.split(" create or replace procedure ").length > 1;
+
+		if (check) {
+			const chunks = query.split(/ create.*? procedure /);
+			const result = chunks[1];
+
+			if (result) {
+				return { result, type: "procedure" };
 			}
 		}
 	}
@@ -112,12 +130,23 @@ const defineType = (query: string): { type: "table" | "sequence" | "index" | "fu
 		}
 	}
 
+	// SECOND CHANCE TO DETECTION
+
 	{
 		const chunks = query.split(/ create.*? function /);
 		const result = chunks[1];
 
 		if (result) {
 			return { result, type: "function" };
+		}
+	}
+
+	{
+		const chunks = query.split(/ create.*? procedure /);
+		const result = chunks[1];
+
+		if (result) {
+			return { result, type: "procedure" };
 		}
 	}
 
@@ -216,6 +245,16 @@ export const search = (sql: string): string => {
 
 				if (name) {
 					queryResult += `DROP EXTENSION IF EXISTS ${name} CASCADE;`;
+				}
+
+				break;
+			}
+
+			case "procedure": {
+				const name = result.split("(")[0]?.trim();
+
+				if (name) {
+					queryResult += `DROP PROCEDURE IF EXISTS ${name} CASCADE;`;
 				}
 
 				break;
