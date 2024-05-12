@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/JS-AK/pg-migration-system/compare/v1.1.0...v1.2.0) (2024-05-12)
+
+
+### Features
+
+* updated Down func ([ea2cc44](https://github.com/JS-AK/pg-migration-system/commit/ea2cc44f58172fd922acb9154c903b9b130a57c0))
+
 # [1.1.0](https://github.com/JS-AK/pg-migration-system/compare/v1.0.7...v1.1.0) (2024-05-11)
 
 
