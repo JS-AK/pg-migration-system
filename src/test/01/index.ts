@@ -20,11 +20,13 @@ export default async () => {
 
 		await Down.start(pool, {
 			isNeedCleanupAll: true,
+			logger: false,
 			migrationsTableName: "migration_control",
 			pathToSQL: path.resolve(process.cwd(), "src", "test", "01", "migrations", "sql"),
 		});
 
 		await Up.start(pool, {
+			logger: false,
 			migrationsTableName: "migration_control",
 			pathToSQL: path.resolve(process.cwd(), "src", "test", "01", "migrations", "sql"),
 		});
@@ -34,6 +36,7 @@ export default async () => {
 		assert.equal(rows.length, 2);
 
 		await Down.start(pool, {
+			logger: false,
 			migrationsTableName: "migration_control",
 			pathToSQL: path.resolve(process.cwd(), "src", "test", "01", "migrations", "sql"),
 		});

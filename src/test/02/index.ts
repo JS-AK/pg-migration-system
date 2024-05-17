@@ -19,16 +19,19 @@ export default async () => {
 
 		await Down.start(pool, {
 			isNeedCleanupAll: true,
+			logger: false,
 			migrationsTableName: "migration_control",
 			pathToSQL: path.resolve(process.cwd(), "src", "test", "02", "migrations", "sql"),
 		});
 
 		await Up.start(pool, {
+			logger: false,
 			migrationsTableName: "migration_control",
 			pathToSQL: path.resolve(process.cwd(), "src", "test", "02", "migrations", "sql"),
 		});
 
 		await Down.start(pool, {
+			logger: false,
 			migrationsTableName: "migration_control",
 			pathToSQL: path.resolve(process.cwd(), "src", "test", "02", "migrations", "sql"),
 		});
