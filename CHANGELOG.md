@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/JS-AK/pg-migration-system/compare/v1.2.0...v1.3.0) (2024-05-17)
+
+
+### Features
+
+* added logger option ([ba32448](https://github.com/JS-AK/pg-migration-system/commit/ba32448af67cb83791795aba38a8fc0d928f03f1))
+
 # [1.2.0](https://github.com/JS-AK/pg-migration-system/compare/v1.1.0...v1.2.0) (2024-05-12)
 
 
