@@ -1,10 +1,9 @@
-/* eslint-disable no-console */
-
 import fs from "node:fs";
 
 import * as Types from "./types/index.js";
 
 import * as Helpers from "./helpers.js";
+import { Logger, TLogger } from "./logger.js";
 
 /**
  * @experimental
@@ -12,12 +11,23 @@ import * as Helpers from "./helpers.js";
 export async function start(
 	pool: Types.Pool,
 	settings: {
-		migrationsTableName: string;
 		isNeedCleanupAll?: boolean;
+		logger?: TLogger | false;
+		migrationsTableName: string;
 		schema?: string;
 		pathToSQL: string;
 	},
 ) {
+	const isLoggerEnabled = !(settings.logger === false);
+
+	const logger = new Logger(
+		settings.logger
+			? settings.logger
+			// eslint-disable-next-line no-console
+			: { error: console.error, info: console.log },
+		isLoggerEnabled,
+	);
+
 	try {
 		const schema = settings.schema || "public";
 
@@ -38,7 +48,7 @@ export async function start(
 			const chunks = queryResult.split(";").filter((e) => e);
 
 			for (const chunk of chunks) {
-				console.log(`${chunk} done!`);
+				logger.info(`${chunk} done!`);
 			}
 		}
 
@@ -46,18 +56,22 @@ export async function start(
 			const query = `DROP TABLE IF EXISTS ${settings.migrationsTableName} CASCADE`;
 
 			await pool.query(query);
-			console.log(`${query} done!`);
+			logger.info(`${query} done!`);
 		}
 
 		if (settings.isNeedCleanupAll) {
 			const query = `DROP SCHEMA ${schema} CASCADE; CREATE SCHEMA ${schema};`;
 
 			await pool.query(query);
-			console.log(`${query} done!`);
+			logger.info(`${query} done!`);
 		}
 
-		console.log("All done!");
+		logger.info("All done!");
 	} catch (error) {
-		return console.log(error);
+		const message = error instanceof Error ? error.message : "unknown error";
+
+		logger.error(message);
+
+		throw error;
 	}
 }
