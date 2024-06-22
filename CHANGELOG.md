@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/JS-AK/pg-migration-system/compare/v1.3.0...v1.4.0) (2024-06-22)
+
+
+### Features
+
+* updated deps ([e193a9c](https://github.com/JS-AK/pg-migration-system/commit/e193a9c706975d5b21326e9ed14a8399a6e62726))
+
 # [1.3.0](https://github.com/JS-AK/pg-migration-system/compare/v1.2.0...v1.3.0) (2024-05-17)
 
 
