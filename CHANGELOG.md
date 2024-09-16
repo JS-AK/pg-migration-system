@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/JS-AK/pg-migration-system/compare/v1.4.0...v1.5.0) (2024-09-16)
+
+
+### Features
+
+* updated Up and Down ([4df4ca8](https://github.com/JS-AK/pg-migration-system/commit/4df4ca8dae83f845eb1b5e8e90240e3164d737e7))
+
 # [1.4.0](https://github.com/JS-AK/pg-migration-system/compare/v1.3.0...v1.4.0) (2024-06-22)
 
 
