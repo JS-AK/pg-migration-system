@@ -22,6 +22,7 @@ export default async () => {
 			logger: false,
 			migrationsTableName: "migration_control",
 			pathToSQL: path.resolve(process.cwd(), "src", "test", "02", "migrations", "sql"),
+			schema: "public",
 		});
 
 		await Up.start(pool, {
