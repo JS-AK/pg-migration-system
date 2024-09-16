@@ -9,7 +9,7 @@ import { Logger, TLogger } from "./logger.js";
  * @experimental
  */
 export async function start(
-	pool: Types.Pool,
+	client: Types.Pool | Types.PoolClient | Types.Client,
 	settings: {
 		isNeedCleanupAll?: boolean;
 		logger?: TLogger | false;
@@ -28,42 +28,46 @@ export async function start(
 		isLoggerEnabled,
 	);
 
+	const migrationsTableName = `"${settings.migrationsTableName}"`;
+
 	try {
-		const schema = settings.schema || "public";
-
-		const sqlFiles = (await Helpers.walk(settings.pathToSQL)).reverse();
-
-		let queryResult = "";
-
-		for (const file of sqlFiles) {
-			const sql = fs.readFileSync(file).toString();
-			const result = Helpers.search(sql);
-
-			queryResult += result;
-		}
-
-		if (queryResult) {
-			await pool.query(queryResult);
-
-			const chunks = queryResult.split(";").filter((e) => e);
-
-			for (const chunk of chunks) {
-				logger.info(`${chunk} done!`);
-			}
-		}
-
-		{
-			const query = `DROP TABLE IF EXISTS ${settings.migrationsTableName} CASCADE`;
-
-			await pool.query(query);
-			logger.info(`${query} done!`);
-		}
-
 		if (settings.isNeedCleanupAll) {
+			if (!settings.schema) throw new Error("Database Schema is required");
+
+			const schema = `"${settings.schema}"`;
+
 			const query = `DROP SCHEMA ${schema} CASCADE; CREATE SCHEMA ${schema};`;
 
-			await pool.query(query);
+			await client.query(query);
 			logger.info(`${query} done!`);
+		} else {
+			const sqlFiles = (await Helpers.walk(settings.pathToSQL)).reverse();
+
+			let queryResult = "";
+
+			for (const file of sqlFiles) {
+				const sql = fs.readFileSync(file).toString();
+				const result = Helpers.search(sql);
+
+				queryResult += result;
+			}
+
+			if (queryResult) {
+				await client.query(queryResult);
+
+				const chunks = queryResult.split(";").filter((e) => e);
+
+				for (const chunk of chunks) {
+					logger.info(`${chunk} done!`);
+				}
+			}
+
+			{
+				const query = `DROP TABLE IF EXISTS ${migrationsTableName} CASCADE`;
+
+				await client.query(query);
+				logger.info(`${query} done!`);
+			}
 		}
 
 		logger.info("All done!");

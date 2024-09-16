@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const defineType = (query: string): {
-	type: |"table" | "sequence" | "procedure" | "index" | "function" | "extension" | "type" | "view" | "unknown";
+	type: | "table" | "sequence" | "procedure" | "index" | "function" | "extension" | "type" | "view" | "materialized view" | "unknown";
 	result: string;
 } => {
 	// CREATE FUNCTION
@@ -88,6 +88,20 @@ const defineType = (query: string): {
 		}
 	}
 
+	// CREATE MATERIALIZED VIEW
+	{
+		const check = query.split(" create materialized view ").length > 1;
+
+		if (check) {
+			const chunks = query.split(/ create.*? view /);
+			const result = chunks[1];
+
+			if (result) {
+				return { result, type: "materialized view" };
+			}
+		}
+	}
+
 	// CREATE TABLE
 	{
 		const check = query.split(" create table ").length > 1;
@@ -132,6 +146,7 @@ const defineType = (query: string): {
 
 	// SECOND CHANCE TO DETECTION
 
+	// FUNCTION
 	{
 		const chunks = query.split(/ create.*? function /);
 		const result = chunks[1];
@@ -141,6 +156,7 @@ const defineType = (query: string): {
 		}
 	}
 
+	// PROCEDURE
 	{
 		const chunks = query.split(/ create.*? procedure /);
 		const result = chunks[1];
@@ -150,6 +166,7 @@ const defineType = (query: string): {
 		}
 	}
 
+	// EXTENSION
 	{
 		const chunks = query.split(/ create.*? extension /);
 		const result = chunks[1];
@@ -167,6 +184,17 @@ const defineType = (query: string): {
 		}
 	}
 
+	// MATERIALIZED VIEW
+	{
+		const chunks = query.split(/ create.*? materialized view /);
+		const result = chunks[1];
+
+		if (result) {
+			return { result, type: "view" };
+		}
+	}
+
+	// VIEW
 	{
 		const chunks = query.split(/ create.*? view /);
 		const result = chunks[1];
@@ -176,6 +204,7 @@ const defineType = (query: string): {
 		}
 	}
 
+	// TABLE
 	{
 		const chunks = query.split(/ create.*? table /);
 		const result = chunks[1];
@@ -185,6 +214,7 @@ const defineType = (query: string): {
 		}
 	}
 
+	// RENAMED TABLE
 	{
 		const chunks = query.split(/ alter table.*? rename to /);
 		const result = chunks[1];
@@ -194,6 +224,7 @@ const defineType = (query: string): {
 		}
 	}
 
+	// SEQUENCE
 	{
 		const chunks = query.split(/ create.*? sequence /);
 		const result = chunks[1];
@@ -203,6 +234,7 @@ const defineType = (query: string): {
 		}
 	}
 
+	// TYPE
 	{
 		const chunks = query.split(/ create.*? type /);
 		const result = chunks[1];
@@ -300,7 +332,17 @@ export const search = (sql: string): string => {
 				break;
 			}
 
-			case "view": {
+			case "materialized view": {
+				const name = result.split(" ")[0]?.trim();
+
+				if (name) {
+					queryResult += `DROP MATERIALIZED VIEW IF EXISTS ${name} CASCADE;`;
+				}
+
+				break;
+			}
+
+			case "index": {
 				const name = result.split(" ")[0]?.trim();
 
 				if (name) {

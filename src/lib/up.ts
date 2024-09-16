@@ -13,7 +13,7 @@ type TFile = { fileName: string; filePath: string; timestamp: number; type: "sql
  * @experimental
  */
 export async function start(
-	pool: Types.Pool,
+	client: Types.Pool | Types.PoolClient | Types.Client,
 	settings: {
 		migrationsTableName: string;
 		logger?: TLogger | false;
@@ -30,6 +30,8 @@ export async function start(
 			: { error: console.error, info: console.log },
 		isLoggerEnabled,
 	);
+
+	const migrationsTableName = `"${settings.migrationsTableName}"`;
 
 	try {
 		const files: TFile[] = [];
@@ -75,15 +77,15 @@ export async function start(
 		try {
 			migrations
 				.push(
-					...(await pool.query<{ title: string; }>(`SELECT * FROM ${settings.migrationsTableName}`))
+					...(await client.query<{ title: string; }>(`SELECT * FROM ${migrationsTableName}`))
 						.rows
 						.map((e) => e.title),
 				);
 		} catch (err) {
 			error = true;
 
-			await pool.query(`
-				CREATE TABLE ${settings.migrationsTableName}(
+			await client.query(`
+				CREATE TABLE ${migrationsTableName}(
 				  id                              BIGSERIAL PRIMARY KEY,
 				  title                           TEXT NOT NULL UNIQUE,
 				  created_at                      TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
@@ -99,16 +101,16 @@ export async function start(
 				if (error) {
 					const sql = fs.readFileSync(filePath).toString();
 
-					await pool.query(sql);
-					await pool.query(`INSERT INTO ${settings.migrationsTableName} (title) VALUES ('${fileName}')`);
+					await client.query(sql);
+					await client.query(`INSERT INTO ${migrationsTableName} (title) VALUES ('${fileName}')`);
 
 					logger.info(`${fileName} done!`);
 				} else {
 					if (!migrations.includes(fileName)) {
 						const sql = fs.readFileSync(filePath).toString();
 
-						await pool.query(sql);
-						await pool.query(`INSERT INTO ${settings.migrationsTableName} (title) VALUES ('${fileName}')`);
+						await client.query(sql);
+						await client.query(`INSERT INTO ${migrationsTableName} (title) VALUES ('${fileName}')`);
 
 						logger.info(`${fileName} done!`);
 					}
@@ -118,10 +120,10 @@ export async function start(
 
 				if (!migrations.includes(fileName)) {
 					const file = await import(pathToFileURL(filePath).href);
-					const { error, message } = await file.up(pool);
+					const { error, message } = await file.up(client);
 
 					if (!error) {
-						await pool.query(`INSERT INTO ${settings.migrationsTableName} (title) VALUES ('${fileName}')`);
+						await client.query(`INSERT INTO ${migrationsTableName} (title) VALUES ('${fileName}')`);
 						logger.info(`${fileName} done!`);
 					} else {
 						logger.error(`${fileName} not done!`);
