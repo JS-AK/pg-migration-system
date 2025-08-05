@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/JS-AK/pg-migration-system/compare/v1.5.0...v1.6.0) (2025-08-05)
+
+
+### Features
+
+* added cjs support ([f7b312b](https://github.com/JS-AK/pg-migration-system/commit/f7b312b4cdccdccc2364cf427a5ce61ccccb9db5))
+
 # [1.5.0](https://github.com/JS-AK/pg-migration-system/compare/v1.4.0...v1.5.0) (2024-09-16)
 
 
